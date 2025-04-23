@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -234,6 +235,9 @@ func newService(cmd *exec.Cmd, urlPrefix string, port int, opts ...ServiceOption
 	cmd.Stderr = s.output
 	cmd.Stdout = s.output
 	cmd.Env = os.Environ()
+	if runtime.GOOS == "windows" {
+		setHideWindow(cmd)
+	}
 	// TODO(minusnine): Pdeathsig is only supported on Linux. Somehow, make sure
 	// process cleanup happens as gracefully as possible.
 	if s.display != "" {
